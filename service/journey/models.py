@@ -1,40 +1,32 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
-# Create your models here.
-# class UserProfile(models.Model):
-#     # id
-#     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
-#     avatar = models.CharField(max_length=200)
-#     about = models.CharField(max_length=500)
-
-
-# class Trip(models.Model):
-#     trip_name = models.CharField(max_length=200)
-#     start_point = models.CharField(max_length=200)
-#     end_point = models.CharField(max_length=200)
-#     departure_date = models.DateTimeField()
-#     transport_type = models.CharField(max_length=200)
-#     available_seats = models.IntegerField()
-#
-#     users = models.ManyToManyField(User, related_name='trips_users', blank=True)
-
-
+# TO DO: create media with blank photo
 class Profile(models.Model):
-    first_name = models.CharField(max_length=200, null=True)
-    last_name = models.CharField(max_length=200, null=True)
-    phone_number = models.CharField(max_length=100, null=True)
-    profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, default='sample.jpg', null=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.TextField(blank=True)
+    last_name = models.TextField(blank=True)
+    id_user = models.IntegerField()
+    bio = models.TextField(blank=True)
+    profile_img = models.ImageField(upload_to='profile_images',
+                                    default='blank-profile-picture.png')
 
     def __str__(self):
-        return f'{self.first_name}'
+        return self.user.username
 
 
-class Location(models.Model):
-    origin = models.CharField(max_length=200)
-    destination = models.CharField(max_length=200)
+class Trip(models.Model):
+    start_point = models.CharField(max_length=200)
+    finish_point = models.CharField(max_length=200)
+    departure_time = models.DateTimeField()
+    transport_type = models.CharField(max_length=200)
+    available_seats = models.IntegerField()
+    status = models.CharField(max_length=200)
+
+    users = models.ManyToManyField(User, related_name='trips_users', blank=True)
 
 
 class Offer(models.Model):
